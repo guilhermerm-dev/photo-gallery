@@ -10,7 +10,8 @@ import { PhotoService } from '../services/photo.service';
 })
 export class PhotoGalleryPage {
 
-  constructor(public photoService: PhotoService, public actionSheetController: ActionSheetController) {
+  constructor(public photoService: PhotoService,
+    public actionSheetController: ActionSheetController) {
   }
 
   async ngOnInit() {
