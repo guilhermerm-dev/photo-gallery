@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ActionSheetController } from '@ionic/angular';
-import { Photo, PhotoService } from '../services/photo.service';
+import { Photo } from '../interfaces/photo';
+import { PhotoService } from '../services/photo.service';
 
 @Component({
   selector: 'photo-gallery',

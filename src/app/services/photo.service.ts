@@ -5,7 +5,8 @@ import {
   CameraPhoto, CameraSource, Filesystem
 } from '@capacitor/core';
 import { Platform } from '@ionic/angular';
-const { Camera, FileSystem, Storage } = Plugins;
+import { Photo } from '../interfaces/photo';
+const { Camera, Storage } = Plugins;
 
 @Injectable({
   providedIn: 'root'
@@ -26,50 +27,12 @@ export class PhotoService {
       quality: 100
     });
 
-    // this.photos.unshift({
-    //   filePath: "soon...",
-    //   webviewPath: capturedPhoto.webPath
-    // });
-
     const savedImageFile = await this.savePicture(capturedPhoto);
     this.photos.unshift(savedImageFile);
     Storage.set({
       key: this.PHOTO_STORAGE,
       value: JSON.stringify(this.photos)
     });
-  }
-
-  public async loadSaved() {
-    const photoList = await Storage.get({ key: this.PHOTO_STORAGE });
-    this.photos = JSON.parse(photoList.value) || [];
-    if (!this.platform.is('hybrid'))
-      await this.setPhotoWebviewPath(this.photos);
-  }
-
-  public async deletePicture(photo: Photo, position: number) {
-    this.photos.splice(position, 1);
-
-    Storage.set({
-      key: this.PHOTO_STORAGE,
-      value: JSON.stringify(this.photos)
-    });
-
-    const filename = photo.filePath.substr(photo.filePath.lastIndexOf('/') + 1);
-
-    await Filesystem.deleteFile({
-      path: filename,
-      directory: FilesystemDirectory.Data
-    });
-  }
-
-  private async setPhotoWebviewPath(photos: Photo[]) {
-    for (let photo of photos) {
-      const readFile = await Filesystem.readFile({
-        path: photo.filePath,
-        directory: FilesystemDirectory.Data
-      })
-      photo.webviewPath = `data:image/jpeg;base64, ${readFile.data}`;
-    }
   }
 
   private async savePicture(cameraPhoto: CameraPhoto) {
@@ -117,11 +80,39 @@ export class PhotoService {
     }
     reader.readAsDataURL(blob);
   });
-}
 
-export interface Photo {
-  filePath: string;
-  webviewPath: string;
+  public async loadSaved() {
+    const photoList = await Storage.get({ key: this.PHOTO_STORAGE });
+    this.photos = JSON.parse(photoList.value) || [];
+    if (!this.platform.is('hybrid'))
+      await this.setPhotoWebviewPath(this.photos);
+  }
+
+  private async setPhotoWebviewPath(photos: Photo[]) {
+    for (let photo of photos) {
+      const readFile = await Filesystem.readFile({
+        path: photo.filePath,
+        directory: FilesystemDirectory.Data
+      })
+      photo.webviewPath = `data:image/jpeg;base64, ${readFile.data}`;
+    }
+  }
+
+  public async deletePicture(photo: Photo, position: number) {
+    this.photos.splice(position, 1);
+
+    Storage.set({
+      key: this.PHOTO_STORAGE,
+      value: JSON.stringify(this.photos)
+    });
+
+    const filename = photo.filePath.substr(photo.filePath.lastIndexOf('/') + 1);
+
+    await Filesystem.deleteFile({
+      path: filename,
+      directory: FilesystemDirectory.Data
+    });
+  }
 }
 
 
