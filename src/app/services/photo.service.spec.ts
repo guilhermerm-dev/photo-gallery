@@ -1,12 +1,16 @@
-import { Platform } from "@ionic/angular";
-import { PhotoService } from "./photo.service";
+import { TestBed } from '@angular/core/testing';
+
+import { PhotoService } from './photo.service';
 
 describe('PhotoService', () => {
-    let photoService: PhotoService;
-    let platform: Platform;
+  let service: PhotoService;
 
-    it('Should create component', () => {
-        photoService = new PhotoService(platform);
-        expect(photoService).toBeTruthy();
-    })
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(PhotoService);
+  });
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
 });
