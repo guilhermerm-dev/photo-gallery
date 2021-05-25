@@ -16,7 +16,6 @@ export class PhotoGalleryPage {
 
   async ngOnInit() {
     await this.photoService.loadSaved();
-    console.log(this.photoService.photos);
   }
 
   addPhotoToGallery() {
